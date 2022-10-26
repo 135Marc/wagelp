@@ -1,13 +1,13 @@
-import {Form,FloatingLabel, Button, ListGroup,Container,Row,Col} from "react-bootstrap"
+import { Form,FloatingLabel, Button,Row,Col } from "react-bootstrap"
 import Flex from "@react-css/flex"
 import axios, { CancelTokenSource } from "axios"
 import {useState,useEffect,useMemo} from "react"
 import TaxTable from "../Visualizer/TaxTable"
 import Income from "../Income/Income"
-import {TableReq,TableType,YearsData,YearsType} from "../../interfaces/interfaces"
-import { translateRegion,monthShortToLong,dependents_arr, months_number } from "../../utils/utils"
+import { TableType,YearsType } from "../../interfaces/interfaces"
+import { translateRegion,monthShortToLong,dependents_arr} from "../../utils/utils"
+import { getPromise,getYears } from "../../utils/requests"
 import "./Home.css"
-
 
 export function Home() : JSX.Element {
 
@@ -25,37 +25,19 @@ export function Home() : JSX.Element {
     const cancelToken:CancelTokenSource = useMemo(() => axios.CancelToken.source(),[]);
 
     useEffect(() => {
-        
-        async function getPromise() {
-            axios.post<TableReq>('http://localhost:8080/regimes',
-            {cancelToken:cancelToken.token})
-            .then(({data}) => setPromiseData(data.data))
-            .catch((e:Error) => {  
-                if (axios.isCancel(e)) return;
-            })
-        }
 
-        async function getYears() {
-            axios.post<YearsData>('http://localhost:8080/years',{
-                cancelToken: cancelToken.token
-            }).then(({data}) => setPromiseYear(data.data))
-            .catch((e:Error) => {
-                if (axios.isCancel(e)) return;
-                }
-            )
+        getPromise(cancelToken).then((data) => setPromiseData(data.data))
+        .catch((e:Error) => { if (axios.isCancel(e)) return; });
 
-        }
-        
-        getPromise();
-        getYears();
+        getYears(cancelToken).then((data) => setPromiseYear(data.data))
+        .catch((e:Error) => { if (axios.isCancel(e)) return; });
 
         return () => cancelToken.cancel();
-           
     }
 
     ,[]);
 
-    const handleIncome = () => {
+    function handleIncome () {
         const aa = document.getElementById("income-form") as HTMLInputElement;
         const monthly = document.getElementById("inline-checkbox-1") as HTMLInputElement;
         const yearly = document.getElementById("inline-checkbox-2") as HTMLInputElement;
@@ -66,7 +48,6 @@ export function Home() : JSX.Element {
         if (yearly.checked) setSalaryType("yearly");
     }
 
-
     return (
         <>
         <h2> Bem-vindo!  </h2>
@@ -74,7 +55,7 @@ export function Home() : JSX.Element {
 
             <Row>
                 <Col lg={4}>
-                    <FloatingLabel label="Regime Fiscal">
+                    <FloatingLabel label="Situação Fiscal">
                         <Form.Select aria-label="Select Table Type">       
                             {promiseData.map((t:TableType) => 
                                 <option key={t.Number} value={t.Number} onClick={() => setTableType(t.Number)}> {t.Description} </option>
@@ -84,7 +65,7 @@ export function Home() : JSX.Element {
                 </Col>
 
                 <Col lg={4}>
-                    <FloatingLabel label="Região e Ano">
+                    <FloatingLabel label="Região, Ano e Período Temporal">
                         <Form.Select aria-label="Select Table Type">
                             
                             {promiseYear.map((y:YearsType) =>
@@ -110,7 +91,6 @@ export function Home() : JSX.Element {
 
             <Flex flexDirection="column">
                 
-                {/*
                 <Button onClick={() => setOpenTable(!openTable)}>
                         {openTable ? "Esconder Tabela" : "Mostrar Tabela"}
                 </Button>
@@ -118,11 +98,11 @@ export function Home() : JSX.Element {
                 
                 { openTable && (
                     <TaxTable tableID={tableID} tableType={tableType} cancelToken={cancelToken}/>)
-                } */}
+                } 
  
                 <h3> Cálculos de Remuneração Base </h3>
-                <Row>
 
+                <Row>
                     <Col lg={2} style={{marginLeft:"1rem"}}>
                         <div key={`inline-checkbox`} className="mb-3">
                             <Form.Check label="Salário Mensal" name="group1" type="checkbox" id="inline-checkbox-1"/>

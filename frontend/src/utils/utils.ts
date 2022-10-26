@@ -1,5 +1,3 @@
-export const hh = () => console.log("");
-
 const shortMonths:{original:string,new:string}[] = [
     {original:"JAN",new:"Janeiro"},
     {original: "FEB",new:"February"},

@@ -1,14 +1,44 @@
 import { CancelTokenSource } from "axios"
 
-export interface TTProps {
+/*
+
+PROPS
+
+*/
+
+export interface TaxTableProps {
     cancelToken:CancelTokenSource,
     tableID: number,
     tableType: number
-
 }
+
+
+export interface IncomeProps extends TaxTableProps {
+    income:number,
+    dependents:number,
+    type:string
+}
+
+/* 
+
+POST REQUEST DATA
+
+*/
 
 export interface TaxTableData {
     data: TaxTableType[]
+}
+
+export interface BracketData {
+    data: BracketType[];
+}
+
+export interface YearsData {
+    data: YearsType[]
+}
+
+export interface TableReq {
+    data:TableType[]
 }
 
 export interface TaxTableType  {
@@ -23,9 +53,7 @@ export interface TaxTableType  {
     Bracket_ID:number,
 }
 
-export interface BracketData {
-    data: BracketType[];
-}
+
 
 export interface BracketType {
     ID:number,
@@ -34,17 +62,9 @@ export interface BracketType {
     Value:number
 }
 
-export interface TableReq {
-    data:TableType[]
-}
-
 export interface TableType {
     Number:number,
     Description:string,
-}
-
-export interface YearsData {
-    data: YearsType[]
 }
 
 export interface YearsType {
@@ -53,19 +73,4 @@ export interface YearsType {
     To:string,
     ID:number,
     Region:string
-}
-
-export interface RegionsData {
-    data:RegionType[]
-}
-
-export interface RegionType {
-    Region : string
-}
-
-export interface IncomeProps extends TTProps {
-    income:number,
-    dependents:number,
-    type:string
-
 }

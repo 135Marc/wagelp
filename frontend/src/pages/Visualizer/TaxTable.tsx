@@ -1,9 +1,10 @@
 import {Table} from "react-bootstrap"
-import axios, { CancelTokenSource } from "axios"
+import axios from "axios"
 import {useState,useEffect} from "react"
-import {TTProps,TaxTableData,TaxTableType,BracketData,BracketType} from "../../interfaces/interfaces"
+import {TaxTableProps,TaxTableData,TaxTableType,BracketData,BracketType} from "../../interfaces/interfaces"
+import {dependents_arr} from "../../utils/utils"
 
-function TaxTable(props:TTProps) : JSX.Element {
+function TaxTable(props:TaxTableProps) : JSX.Element {
 
     const [taxData,setTaxData] = useState<TaxTableType[]>([]);
     const [percentageData,setPercentageData] = useState<BracketType[]>([]);
@@ -28,6 +29,7 @@ function TaxTable(props:TTProps) : JSX.Element {
                     if (axios.isCancel(e)) return;
                 })
         }
+        
 
         async function getTaxPercentages(bid:number){
             axios.post<BracketData>('http://localhost:8080/percentages/' + bid,
@@ -48,23 +50,16 @@ function TaxTable(props:TTProps) : JSX.Element {
 
     return (
         
-        <Table striped bordered hover responsive="sm">
-            
-                
-                <thead>
-                    <tr>
-                        <th>Minimo</th>
-                        <th>Maximo</th>
-                            <th> 0 </th>
-                            <th> 1 </th>
-                            <th> 2</th> 
-                            <th> 3</th>
-                            <th> 4 </th>
-                            <th> 5+ </th>
-    
-                    </tr>
-                </thead>
-
+        <Table striped bordered hover responsive="sm">          
+            <thead>
+                <tr>
+                    <th>Minimo</th>
+                    <th>Maximo</th>
+                    {dependents_arr().map((n:number) =>
+                        <th> {n} </th>
+                    )}
+                </tr>
+            </thead>
              
             <tbody>
                 
@@ -72,20 +67,17 @@ function TaxTable(props:TTProps) : JSX.Element {
                    <tr>
                     <td>{ttt.Minimum.toFixed(2)}</td>
                     <td>{ttt.Maximum.toFixed(2)}</td>
-                    {percentageData.filter((bt) => bt.Bracket_ID == ttt.Bracket_ID).map((percentage) => 
                     
+                    {percentageData.filter((bt) => bt.Bracket_ID == ttt.Bracket_ID).map((percentage) => 
                         <td> {(percentage.Value * 100).toFixed(2)} (%) </td>
                     )}
 
                     </tr>
                 )}
-                
-                
+                       
             </tbody>
         </Table>
-
     )
-
 }
 
 export default TaxTable
