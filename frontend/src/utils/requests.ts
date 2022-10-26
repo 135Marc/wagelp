@@ -1,5 +1,5 @@
 import axios, { CancelTokenSource } from "axios"
-import { TableReq,YearsData,TaxTableData } from "../interfaces/interfaces";
+import { TableReq,YearsData,TaxTableData, BracketData } from "../interfaces/interfaces";
 
 export async function getPromise(cancelToken:CancelTokenSource):Promise<TableReq> {
     return axios.post<TableReq>('http://localhost:8080/regimes',
@@ -16,4 +16,10 @@ export async function getTable(tableID:number,tableType:number,cancelToken:Cance
     return axios.post<TaxTableData>('http://localhost:8080/table/' + tableID + '/' + tableType,
         {cancelToken:cancelToken.token})
         .then(({data}) => data)
+}
+
+export async function getTaxPercentages(bid:number,cancelToken:CancelTokenSource):Promise<BracketData>{
+    return axios.post<BracketData>('http://localhost:8080/percentages/' + bid,
+    {cancelToken:cancelToken.token})
+    .then(({data}) => data)
 }

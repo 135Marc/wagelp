@@ -91,14 +91,13 @@ export function Home() : JSX.Element {
 
             <Flex flexDirection="column">
                 
-                <Button onClick={() => setOpenTable(!openTable)}>
-                        {openTable ? "Esconder Tabela" : "Mostrar Tabela"}
-                </Button>
-
-                
                 { openTable && (
                     <TaxTable tableID={tableID} tableType={tableType} cancelToken={cancelToken}/>)
                 } 
+
+                <Button onClick={() => setOpenTable(!openTable)}>
+                    {openTable ? "Esconder Tabela" : "Mostrar Tabela"}
+                </Button>
  
                 <h3> Cálculos de Remuneração Base </h3>
 

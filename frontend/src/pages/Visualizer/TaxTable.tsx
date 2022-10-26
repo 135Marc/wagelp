@@ -1,8 +1,9 @@
 import {Table} from "react-bootstrap"
 import axios from "axios"
 import {useState,useEffect} from "react"
-import {TaxTableProps,TaxTableData,TaxTableType,BracketData,BracketType} from "../../interfaces/interfaces"
+import {TaxTableProps,TaxTableType,BracketType} from "../../interfaces/interfaces"
 import {dependents_arr} from "../../utils/utils"
+import { getTable,getTaxPercentages } from "../../utils/requests"
 
 function TaxTable(props:TaxTableProps) : JSX.Element {
 
@@ -11,38 +12,24 @@ function TaxTable(props:TaxTableProps) : JSX.Element {
 
     useEffect(() => {
 
-        async function getTable() {
-            axios.post<TaxTableData>('http://localhost:8080/table/' + props.tableID + '/' + props.tableType,
-                {cancelToken:props.cancelToken.token})
-                .then(({data}) => { 
+        getTable(props.tableID,props.tableType,props.cancelToken).then((data) => { 
                     
-                    setTaxData(data.data);
+            setTaxData(data.data);
 
-                    data.data.forEach((tt) => {
-                        
-                        getTaxPercentages(tt.Bracket_ID)
-                        
-                    });
-
-                })
-                .catch((e:Error) => {  
+            data.data.forEach((tt) => {
+                
+                getTaxPercentages(tt.Bracket_ID,props.cancelToken)
+                .then((data) => setPercentageData(percentageData => percentageData.concat(data.data)))
+                .catch((e:Error) => {
                     if (axios.isCancel(e)) return;
                 })
-        }
-        
+                
+            });
 
-        async function getTaxPercentages(bid:number){
-            axios.post<BracketData>('http://localhost:8080/percentages/' + bid,
-            {cancelToken:props.cancelToken.token})
-            .then(({data}) => { 
-                setPercentageData(percentageData => percentageData.concat(data.data));
-            })
-            .catch((e:Error) => {
-                if (axios.isCancel(e)) return;
-            })
-        }
-
-        getTable();
+        })
+        .catch((e:Error) => {  
+            if (axios.isCancel(e)) return;
+        })
 
         return () => props.cancelToken.cancel();
 
