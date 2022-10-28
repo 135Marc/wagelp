@@ -23,3 +23,9 @@ export async function getTaxPercentages(bid:number,cancelToken:CancelTokenSource
     {cancelToken:cancelToken.token})
     .then(({data}) => data)
 }
+
+export async function getIncome(money:number,tableID:number,tableType:number,dependents:number,cancelToken:CancelTokenSource):Promise<TaxTableData> {
+    return axios.post<TaxTableData>('http://localhost:8080/income/' + money + '/' + tableID + '/' + tableType + '/' + dependents,
+    {cancelToken:cancelToken.token})
+    .then(({data}) => data)
+}

@@ -1,28 +1,28 @@
 import {Table} from "react-bootstrap"
-import axios from "axios"
 import {useState,useEffect} from "react"
-import { IncomeProps,TaxTableData,TaxTableType,BracketData,BracketType } from "../../interfaces/interfaces"
+import { IncomeProps,BracketType } from "../../interfaces/interfaces"
+import { getIncome, getTaxPercentages} from "../../utils/requests"
  
 export function Income(props:IncomeProps):JSX.Element {
+    
+    // CONSTANTS OR VARIABLES
+    const money = (props.type === "monthly") ? props.income : (props.income / 14);
+    let yearGross:number, yearIRS:number, yearSS:number, yearLiquid:number;
+    yearGross=yearIRS=yearSS=yearLiquid=0;
 
+    // REACT STATE VARIABLES
     const [doublePercentageData,setDoublePercentageData] = useState<BracketType[]>([]);
-    const [percentageData,setPercentageData] = useState<BracketType[]>([]);
-    const [money,setMoney] = useState(props.type==="monthly" ? props.income : props.income / 14);
-
-    let yearGross:number = 0;
-    let yearIRS:number = 0;
-    let yearSS:number=0;
-    let yearLiquid:number=0;
+    const [percentageData,setPercentageData] = useState<BracketType[]>([]);    
 
     function getYearlyTotals() {
-        percentageData.filter((bracket) => bracket.Dependents == props.dependents).map((pd) => {
+        percentageData.filter((bracket) => bracket.Dependents === props.dependents).forEach((pd) => {
             yearGross+=money*10;
             yearIRS+= (money*pd.Value*10);   
             yearSS+= (money*0.11)*10;
             yearLiquid+=(money - (money * (pd.Value + 0.11)))*10;
         })
 
-        doublePercentageData.filter((bracket) => bracket.Dependents == props.dependents).map((pd) => {
+        doublePercentageData.filter((bracket) => bracket.Dependents === props.dependents).forEach((pd) => {
             yearGross+=money * 4;
             yearIRS+= (money * 2 * pd.Value) * 2;   
             yearSS+= (money * 2 * 0.11)*2;
@@ -32,39 +32,21 @@ export function Income(props:IncomeProps):JSX.Element {
 
     useEffect(() => {
 
-        async function getTaxPercentages(bid:number,normal:boolean){
-            axios.post<BracketData>('http://localhost:8080/percentages/' + bid,
-            {cancelToken:props.cancelToken.token})
-            .then(({data}) => { 
-
-                normal ? setPercentageData(percentageData => percentageData.concat(data.data)) 
-                : setDoublePercentageData(doublePercentageData => doublePercentageData.concat(data.data));
-                 
-            })
-            .catch((e:Error) => {
-                if (axios.isCancel(e)) return;
-            })
+        async function setIncomeState(double:boolean) {
+            let amount:number = (double) ? money *2 : money;
+            getIncome(amount,props.tableID,props.tableType,props.dependents,props.cancelToken)
+            .then((data) => data.data.forEach(d => 
+                    getTaxPercentages(d.Bracket_ID,props.cancelToken)
+                    .then((data) => (double) ? setDoublePercentageData(data.data) 
+                                             : setPercentageData(data.data))
+                    )
+                )
         }
 
-        async function getIncome(value:number,normal:boolean) {
-            axios.post<TaxTableData>('http://localhost:8080/income/' + money + '/' + props.tableID + '/' + props.tableType + '/' + props.dependents,
-            {cancelToken:props.cancelToken.token})
-            .then(({data}) => {
-                let tables:TaxTableType[] = data.data;
-                tables.forEach((tt) => getTaxPercentages(tt.Bracket_ID,normal));    
-            })
-            .catch((e:Error) => {
-                if (axios.isCancel(e)) return;
-            })
-        }
+        setIncomeState(false);
+        setIncomeState(true);
 
-        getIncome(money,true);
-        getIncome(money *2,false);
-
-
-    },[]) 
-
-
+    }) 
 
     return (
         <>
@@ -83,7 +65,7 @@ export function Income(props:IncomeProps):JSX.Element {
 
             <tbody>
 
-                    {percentageData.filter((bracket) => bracket.Dependents == props.dependents).map((pd) => 
+                    {percentageData.filter((bracket) => bracket.Dependents === props.dependents).map((pd) => 
                         <tr key={pd.ID}>
                             <th> {money} </th>
                             <th>{money * pd.Value} </th>
@@ -93,7 +75,7 @@ export function Income(props:IncomeProps):JSX.Element {
 
                     )}
 
-                    {doublePercentageData.filter((bracket) => bracket.Dependents == props.dependents).map((pd) => 
+                    {doublePercentageData.filter((bracket) => bracket.Dependents === props.dependents).map((pd) => 
                         <tr key={pd.ID}>
                             <th> {money * 2}(*)</th>
                             <th> {money * 2 * pd.Value}(*) </th>
@@ -122,19 +104,15 @@ export function Income(props:IncomeProps):JSX.Element {
             </thead>
 
             <tbody>
-
                 <tr>
                     <th> {yearGross} </th>
                     <th> {yearIRS} </th>
                     <th> {yearSS} </th>
                     <th> {yearLiquid} </th>
                 </tr>
-            
             </tbody>
            
         </Table>
-
-       
 
         </>
     )
