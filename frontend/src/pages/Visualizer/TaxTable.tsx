@@ -33,7 +33,7 @@ function TaxTable(props:TaxTableProps) : JSX.Element {
 
         return () => props.cancelToken.cancel();
 
-    },[props.tableID,props.tableType])
+    },[props.tableID,props.tableType,props.cancelToken])
 
     return (
         
@@ -55,7 +55,7 @@ function TaxTable(props:TaxTableProps) : JSX.Element {
                     <td>{ttt.Minimum.toFixed(2)}</td>
                     <td>{ttt.Maximum.toFixed(2)}</td>
                     
-                    {percentageData.filter((bt) => bt.Bracket_ID == ttt.Bracket_ID).map((percentage) => 
+                    {percentageData.filter((bt) => bt.Bracket_ID === ttt.Bracket_ID).map((percentage) => 
                         <td> {(percentage.Value * 100).toFixed(2)} (%) </td>
                     )}
 
