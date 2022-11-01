@@ -48,7 +48,6 @@ export function incomeRoute(req:any,res:any,next:any) {
     let region_id : number = req.params.regionID;
     let table_number : number = req.params.tableNum;
     let value : number = req.params.value;
-    console.log(req.params);
     res.json(getIncome(region_id,table_number,value));
   } catch(e) {
     let err = (e as Error);

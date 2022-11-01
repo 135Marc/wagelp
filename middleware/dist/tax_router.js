@@ -54,7 +54,6 @@ function incomeRoute(req, res, next) {
         var region_id = req.params.regionID;
         var table_number = req.params.tableNum;
         var value = req.params.value;
-        console.log(req.params);
         res.json((0, taxquery_1.getIncome)(region_id, table_number, value));
     }
     catch (e) {
