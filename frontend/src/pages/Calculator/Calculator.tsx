@@ -13,8 +13,8 @@ export function Calculator() : JSX.Element {
 
     const cancelToken:CancelTokenSource = useMemo(() => axios.CancelToken.source(),[]);
 
-    const response_years = useQuery(["years"],getYears).data?.data;
-    const response_regimes = useQuery(["regimes"],getPromise).data?.data;
+    const response_years = useQuery(["years"],getYears,{staleTime:300}).data?.data;
+    const response_regimes = useQuery(["regimes"],getPromise,{staleTime:300}).data?.data;
     
     // Base Wages
     const [tableType,setTableType] = useState<number>(1);
@@ -26,7 +26,8 @@ export function Calculator() : JSX.Element {
     const [salaryType,setSalaryType] = useState<string>("");
     const [foodAid,setFoodAid] = useState<boolean>(false);
     const [hasBonus,setHasBonus] = useState<boolean>(false);
-
+    const [foodAidValue,setFoodAidValue] = useState<number>(0);
+    const [bonusAmount,setBonusAmount] = useState<number>(0);
     // foodAid && tableID > 37 => (amountMoney <= 4.77 is taxFree otherwise add to IRS) 
     //                         => (amountCard <= 7.67 is Tax Free otherwise add to IRS)
 
@@ -39,12 +40,27 @@ export function Calculator() : JSX.Element {
         setOpenCalc(!openCalc);
         if (monthly.checked) setSalaryType("monthly");
         if (yearly.checked) setSalaryType("yearly");
+        if (foodAid || hasBonus) handleExtras();
+    }
+
+    function handleExtras() : void {
+        const foodInput = document.getElementById("") as HTMLInputElement;
+        const bonusInput = document.getElementById("") as HTMLInputElement;
+        if (foodAid) {
+            let foodValue:number = Number.parseFloat(foodInput.value);
+            setFoodAidValue(foodValue);
+        }
+        if (hasBonus) {
+            let bonusValue:number = Number.parseFloat(bonusInput.value);
+            setBonusAmount(bonusValue);
+        }
+
     }
 
 
     return (
         <>
-            <h3> Contexto Fiscal </h3>
+            <h3> Contexto Fiscal e Remuneratório </h3>
             <Row>
                 <Col lg={3}>
                     <FloatingLabel label="Situação Fiscal">
@@ -81,21 +97,30 @@ export function Calculator() : JSX.Element {
                         </Form.Select>
                     </FloatingLabel>
                 </Col>
+
+                <Col lg={3}>
+                    <FloatingLabel label="Modalidade de Pagamento">
+                        <Form.Select aria-label="Select Table Type">
+                            <option> 14 Meses </option>
+                            <option> Duodécimos - Sem Subsídios </option>
+                            <option> Duodécimos - 50% Subsídio de Natal</option>
+                            <option> Duodécimos - 50% Subsídio de Férias</option>
+                            <option> Duodécimos - 50% Ambos os Subsídios </option>
+                        </Form.Select>
+                    </FloatingLabel>
+                </Col>
             </Row>
 
-            <h3> Cálculos de Remuneração Base </h3>
 
             <Row>
                 <Col lg={3} style={{marginTop:"1rem"}}>
                     <Form.Control id="income-form" size="lg" type="text" placeholder="Rendimento Bruto (€)" />
-                       {/*  <Form.Check label="Salário Mensal" name="group1" type="checkbox" id="inline-checkbox-1"/>
-                        <Form.Check label="Salário Anual" name="group1" type="checkbox" id="inline-checkbox-2"/> */}
                 </Col>
 
-                <Col lg={3}>
+                <Col lg={2}>
                     <DropdownButton title="Cálculo" >
-                        <Dropdown.Item> Mensal </Dropdown.Item>
-                        <Dropdown.Item> Anual </Dropdown.Item>
+                        <Dropdown.Item onClick={() => setSalaryType("monthly")}> Mensal </Dropdown.Item>
+                        <Dropdown.Item onClick={() => setSalaryType("yearly")}> Anual </Dropdown.Item>
                     </DropdownButton>
                 </Col>
             </Row>
@@ -144,11 +169,11 @@ export function Calculator() : JSX.Element {
             </Row>
 
             <Button onClick={() => handleIncome()}>
-                    {openCalc ? "Esconder Cálculo" : "Calcular Salário"}
+                    {openCalc ? "Esconder Cálculos" : "Mostrar Cálculos"}
             </Button>
 
             { openCalc && (
-                <Income tableID={tableID} tableType={tableType} cancelToken={cancelToken} income={salary} dependents={dependents} type={salaryType}/>
+                <Income tableID={tableID} tableType={tableType} cancelToken={cancelToken} income={salary} dependents={dependents} type={salaryType} foodValue={foodAidValue}/>
             )}
         </>
     )
