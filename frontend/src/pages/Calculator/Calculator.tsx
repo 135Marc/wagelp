@@ -33,26 +33,25 @@ export function Calculator() : JSX.Element {
 
     function handleIncome() : void {
         const income = document.getElementById("income-form") as HTMLInputElement;
-        const monthly = document.getElementById("inline-checkbox-1") as HTMLInputElement;
-        const yearly = document.getElementById("inline-checkbox-2") as HTMLInputElement;
-        let gross:number = Number.parseFloat(income.value);
+      let gross:number = Number.parseFloat(income.value);
         setSalary(gross);
         setOpenCalc(!openCalc);
-        if (monthly.checked) setSalaryType("monthly");
-        if (yearly.checked) setSalaryType("yearly");
+
         if (foodAid || hasBonus) handleExtras();
     }
 
     function handleExtras() : void {
-        const foodInput = document.getElementById("") as HTMLInputElement;
-        const bonusInput = document.getElementById("") as HTMLInputElement;
+        const foodInput = document.getElementById("food-help") as HTMLInputElement;
+        const bonusInput = document.getElementById("liquid-adder") as HTMLInputElement;
         if (foodAid) {
             let foodValue:number = Number.parseFloat(foodInput.value);
-            setFoodAidValue(foodValue);
+          //  setFoodAidValue(foodValue);
+          console.log(foodValue);
         }
         if (hasBonus) {
             let bonusValue:number = Number.parseFloat(bonusInput.value);
-            setBonusAmount(bonusValue);
+          //  setBonusAmount(bonusValue);
+            console.log(bonusValue);
         }
 
     }
