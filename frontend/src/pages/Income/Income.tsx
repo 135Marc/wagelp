@@ -2,11 +2,16 @@ import {Table} from "react-bootstrap"
 import {useState,useEffect} from "react"
 import { IncomeProps,BracketType } from "../../interfaces/interfaces"
 import { getIncome, getTaxPercentages} from "../../utils/requests"
- 
+
 export function Income(props:IncomeProps):JSX.Element {
+
+    function setMoney(): number {
+        let payment = (props.type === "monthly") ? props.income : (props.income / 14);
+        return payment;
+    }
     
     // CONSTANTS OR VARIABLES
-    const money = (props.type === "monthly") ? props.income : (props.income / 14);
+    const money = setMoney();
     let yearGross:number, yearIRS:number, yearSS:number, yearLiquid:number;
     yearGross=yearIRS=yearSS=yearLiquid=0;
 

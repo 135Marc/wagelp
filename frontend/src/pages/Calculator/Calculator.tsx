@@ -8,7 +8,6 @@ import { translateRegion,monthShortToLong,dependents_arr } from "../../utils/uti
 import Income from "../Income/Income"
 import axios, { CancelTokenSource } from "axios"
 
-
 export function Calculator() : JSX.Element {
 
     const cancelToken:CancelTokenSource = useMemo(() => axios.CancelToken.source(),[]);
@@ -33,10 +32,9 @@ export function Calculator() : JSX.Element {
 
     function handleIncome() : void {
         const income = document.getElementById("income-form") as HTMLInputElement;
-      let gross:number = Number.parseFloat(income.value);
+        let gross:number = Number.parseFloat(income.value);
         setSalary(gross);
         setOpenCalc(!openCalc);
-
         if (foodAid || hasBonus) handleExtras();
     }
 
@@ -45,15 +43,13 @@ export function Calculator() : JSX.Element {
         const bonusInput = document.getElementById("liquid-adder") as HTMLInputElement;
         if (foodAid) {
             let foodValue:number = Number.parseFloat(foodInput.value);
-          //  setFoodAidValue(foodValue);
-          console.log(foodValue);
+            setFoodAidValue(foodValue);
+            
         }
         if (hasBonus) {
             let bonusValue:number = Number.parseFloat(bonusInput.value);
-          //  setBonusAmount(bonusValue);
-            console.log(bonusValue);
+            setBonusAmount(bonusValue);
         }
-
     }
 
 
@@ -109,7 +105,6 @@ export function Calculator() : JSX.Element {
                     </FloatingLabel>
                 </Col>
             </Row>
-
 
             <Row>
                 <Col lg={3} style={{marginTop:"1rem"}}>

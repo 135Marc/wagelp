@@ -1,7 +1,7 @@
 import './App.css';
 import { BrowserRouter as Router,Route,Routes } from 'react-router-dom'
 import { Home } from './pages/Home/Home'
-import { Header } from './pages/Header';
+import { Header } from './components/Header/Header';
 import { Calculator } from './pages/Calculator/Calculator';
 
 function App() {
