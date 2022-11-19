@@ -1,6 +1,6 @@
 import { Form,FloatingLabel,Row,Col,Button, DropdownButton, Dropdown } from "react-bootstrap"
 import { months_number } from "../../utils/utils"
-import { useState,useMemo } from "react"
+import { useState,useMemo, FormEvent, ChangeEvent } from "react"
 import { useQuery } from "react-query"
 import { getPromise,getYears } from "../../utils/requests"
 import { TableType,YearsType } from "../../interfaces/interfaces"
@@ -15,43 +15,25 @@ export function Calculator() : JSX.Element {
     const response_years = useQuery(["years"],getYears,{staleTime:300}).data?.data;
     const response_regimes = useQuery(["regimes"],getPromise,{staleTime:300}).data?.data;
     
-    // Base Wages
+    // Tax Situation
     const [tableType,setTableType] = useState<number>(1);
     const [tableID,setTableID] = useState<number>(1);
     const [dependents,setDependents] = useState<number>(0);
-    const [salary,setSalary] = useState<number>(0);
     const [openCalc,setOpenCalc] = useState<boolean>(false);
-    // Aditional Pay
+
+    // Payment Specific
+    const [salary,setSalary] = useState<number>(0);
     const [salaryType,setSalaryType] = useState<string>("");
-    const [foodAid,setFoodAid] = useState<boolean>(false);
+
+    // Aditional Payment Components
+    const [hasFoodAid,setHasFoodAid] = useState<boolean>(false);
     const [hasBonus,setHasBonus] = useState<boolean>(false);
     const [foodAidValue,setFoodAidValue] = useState<number>(0);
+    const [foodAidType,setFoodAidType] = useState<string>("");
     const [bonusAmount,setBonusAmount] = useState<number>(0);
+
     // foodAid && tableID > 37 => (amountMoney <= 4.77 is taxFree otherwise add to IRS) 
     //                         => (amountCard <= 7.67 is Tax Free otherwise add to IRS)
-
-    function handleIncome() : void {
-        const income = document.getElementById("income-form") as HTMLInputElement;
-        let gross:number = Number.parseFloat(income.value);
-        setSalary(gross);
-        setOpenCalc(!openCalc);
-        if (foodAid || hasBonus) handleExtras();
-    }
-
-    function handleExtras() : void {
-        const foodInput = document.getElementById("food-help") as HTMLInputElement;
-        const bonusInput = document.getElementById("liquid-adder") as HTMLInputElement;
-        if (foodAid) {
-            let foodValue:number = Number.parseFloat(foodInput.value);
-            setFoodAidValue(foodValue);
-            
-        }
-        if (hasBonus) {
-            let bonusValue:number = Number.parseFloat(bonusInput.value);
-            setBonusAmount(bonusValue);
-        }
-    }
-
 
     return (
         <>
@@ -93,6 +75,8 @@ export function Calculator() : JSX.Element {
                     </FloatingLabel>
                 </Col>
 
+            {/* TO-DO: Add React-Redux to eliminate some of the previous complexity*/}
+            
                 <Col lg={3}>
                     <FloatingLabel label="Modalidade de Pagamento">
                         <Form.Select aria-label="Select Table Type">
@@ -108,7 +92,11 @@ export function Calculator() : JSX.Element {
 
             <Row>
                 <Col lg={3} style={{marginTop:"1rem"}}>
-                    <Form.Control id="income-form" size="lg" type="text" placeholder="Rendimento Bruto (€)" />
+                    <Form.Control id="income-form" size="lg" type="text" placeholder="Rendimento Bruto (€)" 
+                        onChange={(e:ChangeEvent<HTMLInputElement>) => {
+                            let val = e.target.value;
+                            setSalary(Number.parseFloat(val));
+                        }}/>
                 </Col>
 
                 <Col lg={2}>
@@ -124,18 +112,22 @@ export function Calculator() : JSX.Element {
             <Row>
                 <Col lg={2} style={{marginLeft:"1rem"}}>
                     <Form.Check label="Subsídio de Alimentação" name="group1" type="checkbox" id="inline-checkbox-3"
-                        onClick={ () => setFoodAid(!foodAid)}/>    
+                        onClick={ () => setHasFoodAid(!hasFoodAid) }/>    
                 </Col>
 
                 <Col lg={3}>
-                    <Form.Control id="food-help" size="lg" type="text" placeholder="Subsídio de Alimentação" disabled={!foodAid} />
+                    <Form.Control id="food-help" size="lg" type="text" placeholder="Subsídio de Alimentação" disabled={!hasFoodAid} 
+                        onChange={(e:ChangeEvent<HTMLInputElement>) => {
+                            let val = e.target.value;
+                            setFoodAidValue(Number.parseFloat(val));
+                        }}/>
                 </Col>
 
                 <Col lg={2}>
                     <FloatingLabel label="Tipo de Pagamento">
-                        <Form.Select aria-label="Tipo de Pagamento" disabled={!foodAid}>
-                            <option> Numerário </option>
-                            <option> Cartão de Refeição</option>
+                        <Form.Select aria-label="Tipo de Pagamento" disabled={!hasFoodAid}>
+                            <option onClick={() => setFoodAidType("numerario")}> Numerário </option>
+                            <option onClick={() => setFoodAidType("cartao")}> Cartão de Refeição</option>
                         </Form.Select>
                     </FloatingLabel>
                 </Col>
@@ -148,7 +140,13 @@ export function Calculator() : JSX.Element {
                 </Col>
 
                 <Col lg={3} style={{marginTop:"1rem"}}>
-                    <Form.Control id="liquid-adder" size="lg" type="text" placeholder="Valor (€)" disabled={!hasBonus}/>
+                    <Form.Control id="liquid-adder" size="lg" type="text" placeholder="Valor (€)" disabled={!hasBonus}
+                        onChange= { (e:ChangeEvent<HTMLInputElement>) => {
+                                let val = e.target.value;
+                                setBonusAmount(Number.parseFloat(val));
+                            }
+                        }
+                    />
                 </Col>
 
                 <Col lg={2} style={{marginTop:"1rem"}}>
@@ -162,8 +160,8 @@ export function Calculator() : JSX.Element {
                 </Col>
             </Row>
 
-            <Button onClick={() => handleIncome()}>
-                    {openCalc ? "Esconder Cálculos" : "Mostrar Cálculos"}
+            <Button onClick={() => setOpenCalc(!openCalc)}>
+                {openCalc ? "Esconder Cálculos" : "Mostrar Cálculos"}
             </Button>
 
             { openCalc && (
