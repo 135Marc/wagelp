@@ -120,7 +120,8 @@ export function Calculator() : JSX.Element {
                         onChange={(e:ChangeEvent<HTMLInputElement>) => {
                             let val = e.target.value;
                             setFoodAidValue(Number.parseFloat(val));
-                        }}/>
+                        }}
+                        />
                 </Col>
 
                 <Col lg={2}>
