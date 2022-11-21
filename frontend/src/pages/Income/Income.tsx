@@ -61,10 +61,8 @@ function Income(props:IncomeProps):JSX.Element {
                 (*) Valor Referente a um mês de Subsídio de Férias/Natal, assumindo 1 ano ou mais de contrato.
                 </caption>
 
-                <thead className="thead-dark">
-                    <ResultsHeader headers={["Valor Bruto Mensal","Desconto",
+                <ResultsHeader headers={["Valor Bruto Mensal","Desconto",
                     "Segurança Social","Total Mensal"]} />
-                </thead>
 
                 <tbody>
                     <ResultsBody percentageData={percentageData} money={money} dependents={props.dependents} />
@@ -79,10 +77,8 @@ function Income(props:IncomeProps):JSX.Element {
                 Valor Totais Anuais (14 Meses de Salário).
                 </caption>
 
-                <thead className="thead-dark">
-                    <ResultsHeader headers={["Total Bruto","Desconto IRS",
+                <ResultsHeader headers={["Total Bruto","Desconto IRS",
                     "Segurança Social","Total Líquido"]} />
-                </thead>
 
                 <tbody>
                     <tr>
