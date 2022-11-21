@@ -1,9 +1,11 @@
-import {Table} from "react-bootstrap"
+import { Table } from "react-bootstrap"
 import {useState,useEffect} from "react"
 import { IncomeProps,BracketType } from "../../interfaces/interfaces"
-import { getIncome, getTaxPercentages} from "../../utils/requests"
+import { getIncome, getTaxPercentages } from "../../utils/requests"
+import ResultsBody from "../../components/ResultsBody/ResultsBody";
+import ResultsHeader from "../../components/ResultsHeader/ResultsHeader";
 
-export function Income(props:IncomeProps):JSX.Element {
+function Income(props:IncomeProps):JSX.Element {
 
     function setMoney(): number {
         let payment = (props.type === "monthly") ? props.income : (props.income / 14);
@@ -50,75 +52,47 @@ export function Income(props:IncomeProps):JSX.Element {
 
         setIncomeState(false);
         setIncomeState(true);
-
     }) 
 
     return (
         <>
-        <Table striped bordered hover responsive="sm">
-            <caption>
-             (*) Valor Referente a um mês de Subsídio de Férias/Natal, assumindo 1 ano ou mais de contrato.
-            </caption>
-            <thead className="thead-dark">
-                <tr>
-                    <th> Valor Bruto Mensal </th>
-                    <th> Desconto IRS</th>
-                    <th> Segurança Social </th>
-                    <th> Total Mensal </th>
-                </tr>
-            </thead>
+            <Table striped bordered hover responsive="sm">
+                <caption>
+                (*) Valor Referente a um mês de Subsídio de Férias/Natal, assumindo 1 ano ou mais de contrato.
+                </caption>
 
-            <tbody>
+                <thead className="thead-dark">
+                    <ResultsHeader headers={["Valor Bruto Mensal","Desconto",
+                    "Segurança Social","Total Mensal"]} />
+                </thead>
 
-                    {percentageData.filter((bracket) => bracket.Dependents === props.dependents).map((pd) => 
-                        <tr key={pd.ID}>
-                            <th> {money} </th>
-                            <th>{money * pd.Value} </th>
-                            <th> {money * 0.11} </th>
-                            <th> {money - (money * (pd.Value + 0.11))}</th>
-                        </tr>
+                <tbody>
+                    <ResultsBody percentageData={percentageData} money={money} dependents={props.dependents} />
+                    <ResultsBody percentageData={doublePercentageData} money={money*2} dependents={props.dependents} />
+                </tbody>
+            </Table>
 
-                    )}
-
-                    {doublePercentageData.filter((bracket) => bracket.Dependents === props.dependents).map((pd) => 
-                        <tr key={pd.ID}>
-                            <th> {money * 2}(*)</th>
-                            <th> {money * 2 * pd.Value}(*) </th>
-                            <th> {money * 2 * 0.11}(*) </th>
-                            <th> {money * 2 - (money * 2 * (pd.Value + 0.11))}(*)</th>
-                        </tr>
-                    )}
+            {getYearlyTotals()}
             
-            </tbody>
-           
-        </Table>
+            <Table striped bordered hover responsive="sm">
+                <caption>
+                Valor Totais Anuais (14 Meses de Salário).
+                </caption>
 
-        {getYearlyTotals()}
-        
-        <Table striped bordered hover responsive="sm">
-            <caption>
-             Valor Totais Anuais (14 Meses de Salário).
-            </caption>
-            <thead className="thead-dark">
-                <tr>
-                    <th> Total Bruto</th>
-                    <th> Desconto IRS</th>
-                    <th> Segurança Social </th>
-                    <th> Total Líquido </th>
-                </tr>
-            </thead>
+                <thead className="thead-dark">
+                    <ResultsHeader headers={["Total Bruto","Desconto IRS",
+                    "Segurança Social","Total Líquido"]} />
+                </thead>
 
-            <tbody>
-                <tr>
-                    <th> {yearGross} </th>
-                    <th> {yearIRS} </th>
-                    <th> {yearSS} </th>
-                    <th> {yearLiquid} </th>
-                </tr>
-            </tbody>
-           
-        </Table>
-
+                <tbody>
+                    <tr>
+                        <th> {yearGross} </th>
+                        <th> {yearIRS} </th>
+                        <th> {yearSS} </th>
+                        <th> {yearLiquid} </th>
+                    </tr>
+                </tbody>
+            </Table>
         </>
     )
 }
