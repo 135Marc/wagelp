@@ -28,7 +28,7 @@ function Income(props:IncomeProps):JSX.Element {
             yearSS+= (money*0.11)*10;
             yearLiquid+=(money - (money * (pd.Value + 0.11)))*10;
         })
-
+ 
         doublePercentageData.filter((bracket) => bracket.Dependents === props.dependents).forEach((pd) => {
             yearGross+=money * 4;
             yearIRS+= (money * 2 * pd.Value) * 2;   
@@ -65,8 +65,10 @@ function Income(props:IncomeProps):JSX.Element {
                     "Segurança Social","Total Mensal"]} />
 
                 <tbody>
-                    <ResultsBody percentageData={percentageData} money={money} dependents={props.dependents} />
-                    <ResultsBody percentageData={doublePercentageData} money={money*2} dependents={props.dependents} />
+                    <ResultsBody percentageData={percentageData} money={money} dependents={props.dependents} 
+                        aid={props.foodValue}/>
+                    <ResultsBody percentageData={doublePercentageData} money={money*2} dependents={props.dependents} 
+                        aid={props.foodValue}/>
                 </tbody>
             </Table>
 

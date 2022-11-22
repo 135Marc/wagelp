@@ -1,6 +1,6 @@
 import { Form,FloatingLabel,Row,Col,Button, DropdownButton, Dropdown } from "react-bootstrap"
 import { months_number } from "../../utils/utils"
-import { useState,useMemo, FormEvent, ChangeEvent } from "react"
+import { useState,useMemo } from "react"
 import { useQuery } from "react-query"
 import { getPromise,getYears } from "../../utils/requests"
 import { TableType,YearsType } from "../../interfaces/interfaces"
@@ -11,7 +11,6 @@ import axios, { CancelTokenSource } from "axios"
 export function Calculator() : JSX.Element {
 
     const cancelToken:CancelTokenSource = useMemo(() => axios.CancelToken.source(),[]);
-
     const response_years = useQuery(["years"],getYears,{staleTime:300}).data?.data;
     const response_regimes = useQuery(["regimes"],getPromise,{staleTime:300}).data?.data;
     
@@ -32,8 +31,16 @@ export function Calculator() : JSX.Element {
     const [foodAidType,setFoodAidType] = useState<string>("");
     const [bonusAmount,setBonusAmount] = useState<number>(0);
 
-    // foodAid && tableID > 37 => (amountMoney <= 4.77 is taxFree otherwise add to IRS) 
-    //                         => (amountCard <= 7.67 is Tax Free otherwise add to IRS)
+    function handleSalary() {
+      //  let calc_help = calculateExtras(tableID,foodAidValue,foodAidType,salary);
+        setOpenCalc(!openCalc);
+        let income = document.getElementById("income-form") as HTMLInputElement;
+        let aid = document.getElementById("food-help") as HTMLInputElement;
+        let bonus = document.getElementById("liquid-adder") as HTMLInputElement;
+        if (hasFoodAid) setFoodAidValue(Number.parseFloat(aid.value));
+        if (hasBonus) setBonusAmount(Number.parseFloat(bonus.value));
+        setSalary(Number.parseFloat(income.value));
+    }
 
     return (
         <>
@@ -52,13 +59,11 @@ export function Calculator() : JSX.Element {
                 <Col lg={3}>
                     <FloatingLabel label="Região, Ano e Período Temporal">
                         <Form.Select aria-label="Select Table Type">
-                            
                             {response_years?.map((y:YearsType) =>
                                 <option key={y.ID} onClick={() => setTableID(y.ID) }> 
                                     [{translateRegion(y.Region)}] {y.Year}  De {monthShortToLong(y.From)} A {monthShortToLong(y.To)} 
                                 </option>
                             )}
-
                         </Form.Select>
                     </FloatingLabel>
                 </Col>
@@ -92,11 +97,7 @@ export function Calculator() : JSX.Element {
 
             <Row>
                 <Col lg={3} style={{marginTop:"1rem"}}>
-                    <Form.Control id="income-form" size="lg" type="text" placeholder="Rendimento Bruto (€)" 
-                        onChange={(e:ChangeEvent<HTMLInputElement>) => {
-                            let val = e.target.value;
-                            setSalary(Number.parseFloat(val));
-                        }}/>
+                    <Form.Control id="income-form" size="lg" type="text" placeholder="Rendimento Bruto (€)" />
                 </Col>
 
                 <Col lg={2}>
@@ -116,12 +117,7 @@ export function Calculator() : JSX.Element {
                 </Col>
 
                 <Col lg={3}>
-                    <Form.Control id="food-help" size="lg" type="text" placeholder="Subsídio de Alimentação" disabled={!hasFoodAid} 
-                        onChange={(e:ChangeEvent<HTMLInputElement>) => {
-                            let val = e.target.value;
-                            setFoodAidValue(Number.parseFloat(val));
-                        }}
-                        />
+                    <Form.Control id="food-help" size="lg" type="text" placeholder="Subsídio de Alimentação" disabled={!hasFoodAid} />
                 </Col>
 
                 <Col lg={2}>
@@ -141,13 +137,7 @@ export function Calculator() : JSX.Element {
                 </Col>
 
                 <Col lg={3} style={{marginTop:"1rem"}}>
-                    <Form.Control id="liquid-adder" size="lg" type="text" placeholder="Valor (€)" disabled={!hasBonus}
-                        onChange= { (e:ChangeEvent<HTMLInputElement>) => {
-                                let val = e.target.value;
-                                setBonusAmount(Number.parseFloat(val));
-                            }
-                        }
-                    />
+                    <Form.Control id="liquid-adder" size="lg" type="text" placeholder="Valor (€)" disabled={!hasBonus}/>
                 </Col>
 
                 <Col lg={2} style={{marginTop:"1rem"}}>
@@ -161,12 +151,14 @@ export function Calculator() : JSX.Element {
                 </Col>
             </Row>
 
-            <Button onClick={() => setOpenCalc(!openCalc)}>
+            <Button onClick={handleSalary}>
                 {openCalc ? "Esconder Cálculos" : "Mostrar Cálculos"}
             </Button>
 
             { openCalc && (
-                <Income tableID={tableID} tableType={tableType} cancelToken={cancelToken} income={salary} dependents={dependents} type={salaryType} foodValue={foodAidValue}/>
+                <Income tableID={tableID} tableType={tableType} cancelToken={cancelToken} 
+                    income={salary} dependents={dependents} type={salaryType} 
+                    foodValue={foodAidValue} foodType={foodAidType}/>
             )}
         </>
     )

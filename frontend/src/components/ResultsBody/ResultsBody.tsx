@@ -1,12 +1,7 @@
-import { BracketType } from "../../interfaces/interfaces"
+import { ResultsBodyProps } from "../../interfaces/interfaces"
 
-interface Props {
-    percentageData : BracketType[],
-    money:number,
-    dependents:number
-}
+function ResultsBody({percentageData,money,dependents,aid}:ResultsBodyProps) : JSX.Element {
 
-function ResultsBody({percentageData,money,dependents}:Props) : JSX.Element {
     return(
         <>
             {percentageData.filter((bracket) => bracket.Dependents === dependents).map((pd) => 
@@ -14,7 +9,7 @@ function ResultsBody({percentageData,money,dependents}:Props) : JSX.Element {
                     <th> {money} </th>
                     <th>{money * pd.Value} </th>
                     <th> {money * 0.11} </th>
-                    <th> {money - (money * (pd.Value + 0.11))}</th>
+                    <th> {money - (money * (pd.Value + 0.11)) + aid*20}</th>
                 </tr>
             )}
         </>

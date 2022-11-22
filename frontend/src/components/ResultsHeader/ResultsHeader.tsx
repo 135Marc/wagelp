@@ -1,9 +1,6 @@
+import { ResultsHeaderProps } from "../../interfaces/interfaces"
 
-interface Props {
-    headers: string[]
-}
-
-function ResultsHeader({headers}:Props) : JSX.Element {
+function ResultsHeader({headers}:ResultsHeaderProps) : JSX.Element {
     return (
         <>
         <thead className="thead-dark">
