@@ -8,6 +8,9 @@ import { translateRegion,monthShortToLong,dependents_arr } from "../../utils/uti
 import Income from "../Income/Income"
 import axios, { CancelTokenSource } from "axios"
 
+import { State } from "../../state/reducers"
+import { useSelector } from "react-redux"
+
 export function Calculator() : JSX.Element {
 
     const cancelToken:CancelTokenSource = useMemo(() => axios.CancelToken.source(),[]);
@@ -31,6 +34,8 @@ export function Calculator() : JSX.Element {
     const [foodAidType,setFoodAidType] = useState<string>("");
     const [bonusAmount,setBonusAmount] = useState<number>(0);
 
+    const state = useSelector((state:State) => state.tableRed);
+
     function handleSalary() {
       //  let calc_help = calculateExtras(tableID,foodAidValue,foodAidType,salary);
         setOpenCalc(!openCalc);
@@ -45,6 +50,7 @@ export function Calculator() : JSX.Element {
     return (
         <>
             <h3> Contexto Fiscal e Remuneratório </h3>
+            <h3> TABLE ID - REACT REDUX {state} </h3>
             <Row>
                 <Col lg={3}>
                     <FloatingLabel label="Situação Fiscal">

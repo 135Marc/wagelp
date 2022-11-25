@@ -6,6 +6,8 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { QueryClient,QueryClientProvider } from 'react-query';
 import {ReactQueryDevtools} from "react-query/devtools"
+import { Provider } from 'react-redux';
+import { store } from './state/store';
 
 const queryClient = new QueryClient();
 
@@ -15,10 +17,12 @@ const root = ReactDOM.createRoot(
 
 root.render(
  /* <React.StrictMode> */
+    <Provider store={store} >
     <QueryClientProvider client={queryClient}>
       <ReactQueryDevtools initialIsOpen={false}/>
       <App />
     </QueryClientProvider>
+    </Provider>
 /* </React.StrictMode> */
 );
 

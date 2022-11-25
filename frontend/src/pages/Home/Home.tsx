@@ -8,6 +8,12 @@ import { translateRegion,monthShortToLong} from "../../utils/utils"
 import { getPromise,getYears } from "../../utils/requests"
 import "./Home.css"
 import { useQuery } from "react-query"
+import { useDispatch } from "react-redux"
+import { bindActionCreators } from "redux"
+import { actionCreators } from "../../state"
+import { State } from "../../state/reducers"
+import { useSelector } from "react-redux"
+
 
 export function Home() : JSX.Element {
 
@@ -21,10 +27,17 @@ export function Home() : JSX.Element {
 
     const cancelToken:CancelTokenSource = useMemo(() => axios.CancelToken.source(),[]);
 
+    const dispatch = useDispatch();
+
+    const {addID,changeID,addType,changeType} = bindActionCreators(actionCreators,dispatch);
+
+    const state = useSelector((state:State) => state.tableRed);
+
     return (
         <>
             <h2> Bem-vindo!  </h2>
             <h4> Por favor, indique-nos os seguintes dados: </h4>
+            <h3> REDUX STATE {state} </h3>
             <Row>
                 <Col lg={2}>
                     <FloatingLabel label="Situação Fiscal">
@@ -40,7 +53,10 @@ export function Home() : JSX.Element {
                     <FloatingLabel label="Região, Ano e Período Temporal">
                         <Form.Select aria-label="Select Table Type">                            
                             {response_years?.map((y:YearsType) =>
-                                <option key={y.ID} onClick={() => setTableID(y.ID) }> 
+                                <option key={y.ID} onClick={() => {
+                                    setTableID(y.ID);
+                                    addID(y.ID); 
+                                }}> 
                                     [{translateRegion(y.Region)}] {y.Year}  De {monthShortToLong(y.From)} A {monthShortToLong(y.To)} 
                                 </option>
                             )}
