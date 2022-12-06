@@ -17,8 +17,8 @@ export interface IncomeProps extends TaxTableProps {
     income:number,
     dependents:number,
     type:string,
-    foodValue:number,
-    foodType:string,
+    foodValue?:number,
+    foodType?:string,
     bonusValue?:number,
     bonusPeriodicity?:number
 }
@@ -27,7 +27,7 @@ export interface ResultsBodyProps {
     percentageData : BracketType[],
     money:number,
     dependents:number,
-    aid:number
+    aid?:number
 }
 
 export interface ResultsHeaderProps {

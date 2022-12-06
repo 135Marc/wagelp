@@ -63,12 +63,10 @@ function Income(props:IncomeProps):JSX.Element {
 
                 <ResultsHeader headers={["Valor Bruto Mensal","Desconto",
                     "Segurança Social","Total Mensal"]} />
-
+                    
                 <tbody>
-                    <ResultsBody percentageData={percentageData} money={money} dependents={props.dependents} 
-                        aid={props.foodValue}/>
-                    <ResultsBody percentageData={doublePercentageData} money={money*2} dependents={props.dependents} 
-                        aid={props.foodValue}/>
+                    <ResultsBody percentageData={percentageData} money={money} dependents={props.dependents} />
+                    <ResultsBody percentageData={doublePercentageData} money={money*2} dependents={props.dependents} />
                 </tbody>
             </Table>
 

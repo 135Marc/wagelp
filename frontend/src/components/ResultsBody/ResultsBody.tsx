@@ -9,7 +9,7 @@ function ResultsBody({percentageData,money,dependents,aid}:ResultsBodyProps) : J
                     <th> {money} </th>
                     <th>{money * pd.Value} </th>
                     <th> {money * 0.11} </th>
-                    <th> {money - (money * (pd.Value + 0.11)) + aid*20}</th>
+                    <th> {money - (money * (pd.Value + 0.11))}</th>
                 </tr>
             )}
         </>
