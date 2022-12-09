@@ -16,7 +16,8 @@ export interface TaxTableProps {
 export interface IncomeProps extends TaxTableProps {
     income:number,
     dependents:number,
-    type:string,
+    isYearly:boolean,
+    payment?:string,
     foodValue?:number,
     foodType?:string,
     bonusValue?:number,

@@ -1,5 +1,4 @@
 import { Form,FloatingLabel,Row,Col,Button, DropdownButton, Dropdown } from "react-bootstrap"
-import { months_number } from "../../utils/utils"
 import { useState,useMemo } from "react"
 import { useQuery } from "react-query"
 import { getPromise,getYears } from "../../utils/requests"
@@ -10,6 +9,7 @@ import axios, { CancelTokenSource } from "axios"
 
 import { State } from "../../state/reducers"
 import { useSelector } from "react-redux"
+import { AditionalIncome } from "../../components/AditionalIncome/AditionalIncome"
 
 export function Calculator() : JSX.Element {
 
@@ -25,12 +25,12 @@ export function Calculator() : JSX.Element {
 
     // Payment Specific
     const [salary,setSalary] = useState<number>(0);
-    const [salaryType,setSalaryType] = useState<string>("");
+    const [isYearly,setIsYearly] = useState<boolean>(false);
+    const [paymentType,setPaymentType] = useState<string>("");
 
     const state = useSelector((state:State) => state.tableRed);
 
     function handleSalary() {
-      //  let calc_help = calculateExtras(tableID,foodAidValue,foodAidType,salary);
         setOpenCalc(!openCalc);
         let income = document.getElementById("income-form") as HTMLInputElement;
         setSalary(Number.parseFloat(income.value));
@@ -80,11 +80,11 @@ export function Calculator() : JSX.Element {
                 <Col lg={3}>
                     <FloatingLabel label="Modalidade de Pagamento">
                         <Form.Select aria-label="Select Table Type">
-                            <option> 14 Meses </option>
-                            <option> Duodécimos - Sem Subsídios </option>
-                            <option> Duodécimos - 50% Subsídio de Natal</option>
-                            <option> Duodécimos - 50% Subsídio de Férias</option>
-                            <option> Duodécimos - 50% Ambos os Subsídios </option>
+                            <option onClick={() => setPaymentType("14m")}> 14 Meses </option>
+                            <option onClick={() => setPaymentType("duod-full")}> Duodécimos - Sem Subsídios </option>
+                            <option onClick={() => setPaymentType("duod-50")}> Duodécimos - 50% Subsídio de Natal</option>
+                            <option onClick={() => setPaymentType("duod-50")}> Duodécimos - 50% Subsídio de Férias</option>
+                            <option onClick={() => setPaymentType("duod-5050")}> Duodécimos - 50% Ambos os Subsídios </option>
                         </Form.Select>
                     </FloatingLabel>
                 </Col>
@@ -97,11 +97,13 @@ export function Calculator() : JSX.Element {
 
                 <Col lg={2}>
                     <DropdownButton title="Cálculo" >
-                        <Dropdown.Item onClick={() => setSalaryType("monthly")}> Mensal </Dropdown.Item>
-                        <Dropdown.Item onClick={() => setSalaryType("yearly")}> Anual </Dropdown.Item>
+                        <Dropdown.Item onClick={() => setIsYearly(false)}> Mensal </Dropdown.Item>
+                        <Dropdown.Item onClick={() => setIsYearly(true)}> Anual </Dropdown.Item>
                     </DropdownButton>
                 </Col>
             </Row>
+
+            <AditionalIncome />
 
             <Button onClick={handleSalary}>
                 {openCalc ? "Esconder Cálculos" : "Mostrar Cálculos"}
@@ -109,7 +111,7 @@ export function Calculator() : JSX.Element {
 
             { openCalc && (
                 <Income tableID={tableID} tableType={tableType} cancelToken={cancelToken} 
-                    income={salary} dependents={dependents} type={salaryType} />
+                    income={salary} dependents={dependents} isYearly={isYearly} />
             )}
         </>
     )

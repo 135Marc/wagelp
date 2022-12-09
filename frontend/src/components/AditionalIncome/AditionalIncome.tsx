@@ -2,7 +2,7 @@ import { Form,FloatingLabel,Row,Col} from "react-bootstrap"
 import { months_number } from "../../utils/utils"
 import { useState } from "react"
 
-function AditionalIncome() : JSX.Element {
+export function AditionalIncome() : JSX.Element {
 
     const [hasFoodAid,setHasFoodAid] = useState<boolean>(false);
     const [hasBonus,setHasBonus] = useState<boolean>(false);

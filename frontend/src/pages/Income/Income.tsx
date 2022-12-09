@@ -8,8 +8,24 @@ import ResultsHeader from "../../components/ResultsHeader/ResultsHeader";
 function Income(props:IncomeProps):JSX.Element {
 
     function setMoney(): number {
-        let payment = (props.type === "monthly") ? props.income : (props.income / 14);
-        return payment;
+        let payment:number = 0;
+        switch(String(props.payment)) {
+            case "14m" :
+                payment = props.income / 14;
+                break;
+            case "duod-full":
+                payment = props.income / 12;
+                break;
+            case "duod-50":
+                payment = props.income / 13.5;
+                break;
+            case "duod-5050":
+                payment = props.income / 13;
+                break;
+            default: 
+                break;
+        }       
+        return (props.isYearly) ? payment : props.income;
     }
     
     // CONSTANTS OR VARIABLES
@@ -56,13 +72,14 @@ function Income(props:IncomeProps):JSX.Element {
 
     return (
         <>
+            <h3> Valores Brutos </h3>
             <Table striped bordered hover responsive="sm">
                 <caption>
                 (*) Valor Referente a um mês de Subsídio de Férias/Natal, assumindo 1 ano ou mais de contrato.
                 </caption>
 
-                <ResultsHeader headers={["Valor Bruto Mensal","Desconto",
-                    "Segurança Social","Total Mensal"]} />
+                <ResultsHeader headers={["Bruto Mensal","Desconto",
+                    "Segurança Social","Após Impostos"]} />
                     
                 <tbody>
                     <ResultsBody percentageData={percentageData} money={money} dependents={props.dependents} />
@@ -77,8 +94,8 @@ function Income(props:IncomeProps):JSX.Element {
                 Valor Totais Anuais (14 Meses de Salário).
                 </caption>
 
-                <ResultsHeader headers={["Total Bruto","Desconto IRS",
-                    "Segurança Social","Total Líquido"]} />
+                <ResultsHeader headers={["Bruto Anual","Desconto IRS",
+                    "Segurança Social","Após Impostos"]} />
 
                 <tbody>
                     <tr>
