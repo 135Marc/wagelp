@@ -4,39 +4,26 @@ import { IncomeProps,BracketType } from "../../interfaces/interfaces"
 import { getIncome, getTaxPercentages } from "../../utils/requests"
 import ResultsBody from "../../components/ResultsBody/ResultsBody";
 import ResultsHeader from "../../components/ResultsHeader/ResultsHeader";
+import { setMoney } from "../../utils/utils";
+import { useQuery } from "react-query";
 
 function Income(props:IncomeProps):JSX.Element {
-
-    function setMoney(): number {
-        let payment:number = 0;
-        switch(String(props.payment)) {
-            case "14m" :
-                payment = props.income / 14;
-                break;
-            case "duod-full":
-                payment = props.income / 12;
-                break;
-            case "duod-50":
-                payment = props.income / 13.5;
-                break;
-            case "duod-5050":
-                payment = props.income / 13;
-                break;
-            default: 
-                break;
-        }       
-        return (props.isYearly) ? payment : props.income;
-    }
     
     // CONSTANTS OR VARIABLES
-    const money = setMoney();
+    const money = setMoney(props.isYearly,props.payment,props.income);
     let yearGross:number, yearIRS:number, yearSS:number, yearLiquid:number;
     yearGross=yearIRS=yearSS=yearLiquid=0;
 
     // REACT STATE VARIABLES
+    /*
+    const prct = useQuery(["percentage",money,props.tableID,props.tableType,props.dependents,props.cancelToken], () =>
+    getIncome(money,props.tableID,props.tableType,props.dependents,props.cancelToken));
+    console.log(prct.data);
+    */
     const [doublePercentageData,setDoublePercentageData] = useState<BracketType[]>([]);
     const [percentageData,setPercentageData] = useState<BracketType[]>([]);    
 
+    //  FULL REWORK MAY BE POSSIBLE!
     function getYearlyTotals() {
         percentageData.filter((bracket) => bracket.Dependents === props.dependents).forEach((pd) => {
             yearGross+=money*10;
@@ -55,20 +42,24 @@ function Income(props:IncomeProps):JSX.Element {
 
     useEffect(() => {
 
+        // RE-WORK: Com base no tipo de pagamento, ajustar a DoublePercentageData (duodécimos ou 14m)
+        // Duodécimos completos -> todos os meses recebemos o mesmo
+        // FULL-REWORK DISTO PODE SER POSSÍVEL!
+        
         async function setIncomeState(double:boolean) {
             let amount:number = (double) ? money *2 : money;
             getIncome(amount,props.tableID,props.tableType,props.dependents,props.cancelToken)
-            .then((data) => data.data.forEach(d => 
-                    getTaxPercentages(d.Bracket_ID,props.cancelToken)
-                    .then((data) => (double) ? setDoublePercentageData(data.data) 
-                                             : setPercentageData(data.data))
+            .then(({data}) => data.forEach(d => getTaxPercentages(d.Bracket_ID,props.cancelToken)
+                                                .then(({data}) => (double) 
+                                                ? setDoublePercentageData(data) 
+                                                : setPercentageData(data))
                     )
                 )
         }
 
         setIncomeState(false);
         setIncomeState(true);
-    }) 
+    },[props.income,props.dependents,props.isYearly,props.tableID,props.tableType]); 
 
     return (
         <>
@@ -82,8 +73,8 @@ function Income(props:IncomeProps):JSX.Element {
                     "Segurança Social","Após Impostos"]} />
                     
                 <tbody>
-                    <ResultsBody percentageData={percentageData} money={money} dependents={props.dependents} />
-                    <ResultsBody percentageData={doublePercentageData} money={money*2} dependents={props.dependents} />
+                    <ResultsBody percentageData={percentageData.filter((bt:BracketType) => bt.Dependents === props.dependents)} money={money}/>
+                    <ResultsBody percentageData={doublePercentageData.filter((bt:BracketType) => bt.Dependents === props.dependents)} money={money*2}  />
                 </tbody>
             </Table>
 

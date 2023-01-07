@@ -26,7 +26,7 @@ export function Calculator() : JSX.Element {
     // Payment Specific
     const [salary,setSalary] = useState<number>(0);
     const [isYearly,setIsYearly] = useState<boolean>(false);
-    const [paymentType,setPaymentType] = useState<string>("");
+    const [paymentType,setPaymentType] = useState<string>("14m");
 
     const state = useSelector((state:State) => state.tableRed);
 
@@ -69,7 +69,7 @@ export function Calculator() : JSX.Element {
                     <FloatingLabel label="Número de Dependentes">
                         <Form.Select aria-label="Select Table Type">
                             {dependents_arr().map((n:number) =>
-                                <option onClick={() => setDependents(n)}> {n} </option>
+                                <option key ={n} onClick={() => setDependents(n)}> {n} </option>
                             )}
                         </Form.Select>
                     </FloatingLabel>
@@ -111,7 +111,7 @@ export function Calculator() : JSX.Element {
 
             { openCalc && (
                 <Income tableID={tableID} tableType={tableType} cancelToken={cancelToken} 
-                    income={salary} dependents={dependents} isYearly={isYearly} />
+                    income={salary} dependents={dependents} isYearly={isYearly} payment={paymentType} />
             )}
         </>
     )

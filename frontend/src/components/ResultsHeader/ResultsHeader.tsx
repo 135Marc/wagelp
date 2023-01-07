@@ -5,7 +5,7 @@ function ResultsHeader({headers}:ResultsHeaderProps) : JSX.Element {
         <>
         <thead className="thead-dark">
             <tr>
-                {headers.map( (h) => <th> {h} </th> )}
+                {headers.map( (h) => <th key={h}> {h} </th> )}
             </tr>
         </thead>
         </>

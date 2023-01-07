@@ -4,7 +4,7 @@ import { IconContext } from 'react-icons'
 import {MdCalculate,MdTableView} from 'react-icons/md'
 import {FaMoneyCheckAlt} from 'react-icons/fa'
 import "./Header.css"
-import { Link } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 
 export function Header(): JSX.Element  {
 
@@ -13,7 +13,7 @@ export function Header(): JSX.Element  {
             <Navbar expand="lg">
 
                 <Link to="">
-                    <IconContext.Provider value={{size:"4vh"}}>
+                    <IconContext.Provider value={{size:"2.5em"}}>
                         <FaMoneyCheckAlt id="brand-icon"/>
                     </IconContext.Provider> Wagelp
                 </Link>
@@ -28,14 +28,13 @@ export function Header(): JSX.Element  {
                                 <MdTableView/>
                             </IconContext.Provider> Visualizador
                         </Nav.Link>
+
+                        <NavLink to="/calculadora">                            
+                            <IconContext.Provider value={{}}>
+                                <MdCalculate/>
+                            </IconContext.Provider> Calculadora 
+                        </NavLink>
                         
-                        <Nav.Link disabled={false}>
-                            <Link to="/calculadora">
-                                <IconContext.Provider value={{}}>
-                                    <MdCalculate/>
-                                </IconContext.Provider> Calculadora 
-                            </Link>
-                        </Nav.Link>
                     </Nav>
                 </Navbar.Collapse>
             </Navbar>

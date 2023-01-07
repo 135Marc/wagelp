@@ -48,7 +48,7 @@ export function AditionalIncome() : JSX.Element {
                     <FloatingLabel label="Durante quantos meses?">
                         <Form.Select aria-label="How Many Months" disabled={!hasBonus}>
                             {months_number().map((n:number) =>
-                                <option> {n} </option>
+                                <option key={n}> {n} </option>
                             )}
                         </Form.Select>
                     </FloatingLabel>

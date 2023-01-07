@@ -74,3 +74,25 @@ export function calculateYearlyTotals(money:number,dependents:number,percentageD
     })
     return res;
 }
+
+export function setMoney(isYearly:boolean,payment:string | undefined,income:number) {
+    let pay:number = 0;
+    switch(String(payment)) {
+        case "14m" :
+            pay = income / 14;
+            break;
+        case "duod-full":
+            pay = income / 12;
+            break;
+        case "duod-50":
+            pay = income / 13.5;
+            break;
+        case "duod-5050":
+            pay = income / 13;
+            break;
+        default: 
+            break;
+    }
+       
+    return (isYearly) ? pay : income;
+}

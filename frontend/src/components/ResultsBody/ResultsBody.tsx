@@ -1,10 +1,10 @@
-import { ResultsBodyProps } from "../../interfaces/interfaces"
+import { BracketType, ResultsBodyProps } from "../../interfaces/interfaces"
 
-function ResultsBody({percentageData,money,dependents,aid}:ResultsBodyProps) : JSX.Element {
+function ResultsBody({percentageData,money,aid}:ResultsBodyProps) : JSX.Element {
 
     return(
         <>
-            {percentageData.filter((bracket) => bracket.Dependents === dependents).map((pd) => 
+            {percentageData.map((pd:BracketType) => 
                 <tr key={pd.ID}>
                     <th> {money} </th>
                     <th>{money * pd.Value} </th>
