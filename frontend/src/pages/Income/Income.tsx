@@ -7,32 +7,35 @@ import { calculateYearlyTotals, setMoney } from "../../utils/utils";
 import { useQuery } from "react-query";
 
 function Income(props:IncomeProps):JSX.Element {
+
+    const {tableID,tableType,isYearly,payment,
+           income,dependents,cancelToken} = props;
     
     // CONSTANTS OR VARIABLES
-    const money = setMoney(props.isYearly,props.payment,props.income); // Get Monthly Income, If Salary is Yearly
+    const money = setMoney(isYearly,payment,income); // Get Monthly Income, If Salary is Yearly
     
-    const hasDouble = (props.payment === "14m" || props.payment === "duod-50");
-    const hasOneAndHalf = (props.payment === "duod-50" || props.payment ==="duod-5050");
+    const hasDouble = (payment === "14m" || payment === "duod-50");
+    const hasOneAndHalf = (payment === "duod-50" || payment ==="duod-5050");
 
     let yearGross:number, yearIRS:number, yearSS:number, yearLiquid:number;
     yearGross=yearIRS=yearSS=yearLiquid=0;
 
-    const prctSingle = useQuery(["percentage",money,props.tableID,props.tableType,props.dependents,props.cancelToken], 
-    () => getIncome(money,props.tableID,props.tableType,props.dependents,props.cancelToken));
+    const prctSingle = useQuery(["percentage",money,tableID,tableType,dependents,cancelToken], 
+    () => getIncome(money,tableID,tableType,dependents,cancelToken));
 
-    const prctOneAndHalf = useQuery(["percentageOneFive",money*1.5,props.tableID,props.tableType,props.dependents,props.cancelToken], 
-    () => getIncome(money*1.5,props.tableID,props.tableType,props.dependents,props.cancelToken),
+    const prctOneAndHalf = useQuery(["percentageOneFive",money*1.5,tableID,tableType,dependents,cancelToken], 
+    () => getIncome(money*1.5,tableID,tableType,dependents,cancelToken),
     {enabled: hasOneAndHalf});
     
-    const prctDouble = useQuery(["percentage2",money*2,props.tableID,props.tableType,props.dependents,props.cancelToken], 
-    () => getIncome(money*2,props.tableID,props.tableType,props.dependents,props.cancelToken),
+    const prctDouble = useQuery(["percentage2",money*2,tableID,tableType,dependents,cancelToken], 
+    () => getIncome(money*2,tableID,tableType,dependents,cancelToken),
     {enabled: hasDouble});
 
 
     //  FULL REWORK MAY BE POSSIBLE!
     function getYearlyTotals() {
-       let values = calculateYearlyTotals(money,prctSingle.data?.data.filter((pd) => pd.Dependents === props.dependents),
-       prctDouble.data?.data.filter((pd) => pd.Dependents === props.dependents));
+       let values = calculateYearlyTotals(money,prctSingle.data?.data.filter((pd) => pd.Dependents === dependents),
+       prctDouble.data?.data.filter((pd) => pd.Dependents === dependents));
 
        yearGross = values.gross;
        yearIRS = values.IRS;
@@ -43,18 +46,30 @@ function Income(props:IncomeProps):JSX.Element {
     return (
         <>
             <h3> Valores Brutos </h3>
+
             <Table striped bordered hover responsive="sm">
                 <caption>
-                (*) Valor Referente a um mês de Subsídio de Férias/Natal, assumindo 1 ano ou mais de contrato.
+                
+                {hasDouble && ("(*) Valor Referente a um mês de Subsídio de Férias/Natal, assumindo 1 ano ou mais de contrato.")}
+                
+                <br/>
+                
+                {hasOneAndHalf && (
+                    "(+) Valor Referente a um salário mais 50% do Subsídio de Férias/Natal, aplicável ao regime de duodécimos.")}
+
                 </caption>
 
                 <ResultsHeader headers={["Bruto Mensal","Desconto","Segurança Social","Após Impostos"]} />
                     
                 <tbody>
-                    <ResultsBody percentageData={prctSingle.data?.data.filter((bt:BracketType) => bt.Dependents === props.dependents)} 
+                    <ResultsBody percentageData={prctSingle.data?.data.filter((bt:BracketType) => bt.Dependents === dependents)} 
                                  money={money}/>
-                    <ResultsBody percentageData={prctDouble.data?.data.filter((bt:BracketType) => bt.Dependents === props.dependents)} 
-                                 money={money*2}  />
+                    {hasDouble ? <ResultsBody percentageData={prctDouble.data?.data.filter((bt:BracketType) => bt.Dependents === dependents)} 
+                                 money={money*2} separator="(*)" />
+                                : null }
+                    {hasOneAndHalf ? <ResultsBody percentageData={prctOneAndHalf.data?.data.filter((bt:BracketType) => bt.Dependents === dependents)} 
+                                 money={money*1.5} separator="(+)"/>
+                                : null}            
                 </tbody>
             </Table>
 

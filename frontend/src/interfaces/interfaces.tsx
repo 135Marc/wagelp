@@ -27,7 +27,8 @@ export interface IncomeProps extends TaxTableProps {
 export interface ResultsBodyProps {
     percentageData : BracketType[] | undefined,
     money:number,
-    aid?:number
+    aid?:number,
+    separator?:string
 }
 
 export interface ResultsHeaderProps {

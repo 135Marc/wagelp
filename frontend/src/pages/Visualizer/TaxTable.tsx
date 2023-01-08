@@ -4,6 +4,7 @@ import {useState,useEffect} from "react"
 import {TaxTableProps,TaxTableType,BracketType} from "../../interfaces/interfaces"
 import {dependents_arr} from "../../utils/utils"
 import { getTable,getTaxPercentages } from "../../utils/requests"
+import { useQuery } from "react-query"
 
 function TaxTable(props:TaxTableProps) : JSX.Element {
 
