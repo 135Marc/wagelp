@@ -4,7 +4,7 @@ function ResultsBody({percentageData,money,aid}:ResultsBodyProps) : JSX.Element 
 
     return(
         <>
-            {percentageData.map((pd:BracketType) => 
+            {percentageData?.map((pd:BracketType) => 
                 <tr key={pd.ID}>
                     <th> {money} </th>
                     <th>{money * pd.Value} </th>

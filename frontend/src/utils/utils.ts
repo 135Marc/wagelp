@@ -1,4 +1,4 @@
-import { BracketType } from "../interfaces/interfaces";
+import { BracketType} from "../interfaces/interfaces";
 
 const shortMonths:{original:string,new:string}[] = [
     {original:"JAN",new:"Janeiro"},
@@ -64,14 +64,23 @@ export function calculateFoodAid(tableID:number,foodAid:number,aidType:string,mo
     return res;
 }
 
-export function calculateYearlyTotals(money:number,dependents:number,percentageData:BracketType[],double:boolean) {
+export function calculateYearlyTotals(money:number,prctSingle?:BracketType[],prctDouble?:BracketType[],prctOneHalf?:BracketType[]) {
     let res = { gross:0,IRS:0,SS:0,liquid:0}
-    percentageData.filter((bracket) => bracket.Dependents === dependents).forEach((pd) => {
-        res.gross+= (double) ? money * 4 : money*10;
-        res.IRS+= (double) ? (money * 2 * pd.Value) * 2 : (money*pd.Value*10);   
-        res.SS+= (double) ? (money * 2 * 0.11)*2 : (money*0.11)*10;
-        res.liquid+=(double) ? (money * 2 - (money * 2 * (pd.Value + 0.11))) *2 : (money - (money * (pd.Value + 0.11)))*10;
+
+    prctSingle?.forEach((pd) => {
+        res.gross +=money*10;
+        res.IRS += (money*pd.Value*10);   
+        res.SS += (money*0.11)*10;
+        res.liquid +=(money - (money * (pd.Value + 0.11)))*10;
     })
+
+    prctDouble?.forEach((pd) => {
+        res.gross += money * 4;
+        res.IRS += (money * 2 * pd.Value) * 2;   
+        res.SS += (money * 2 * 0.11)*2;
+        res.liquid +=(money * 2 - (money * 2 * (pd.Value + 0.11))) *2;
+    })
+
     return res;
 }
 
