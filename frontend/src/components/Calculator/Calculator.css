@@ -1,0 +1,22 @@
+.form-select {
+    color: teal
+}
+
+.form-select:focus {
+    border-color: #86b7fe;
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem rgba(0,128,128,.25);
+}
+
+.btn.btn-primary {
+    background-color: #00008F;
+}
+
+.form-check {
+    margin-top: .5rem;
+}
+
+.calculate-btn {
+    margin-left: 40em;
+    margin-top: 3em;
+}

@@ -64,22 +64,97 @@ export function calculateFoodAid(tableID:number,foodAid:number,aidType:string,mo
     return res;
 }
 
-export function calculateYearlyTotals(money:number,prctSingle?:BracketType[],prctDouble?:BracketType[],prctOneHalf?:BracketType[]) {
-    let res = { gross:0,IRS:0,SS:0,liquid:0}
+export function calculateYearGross(money:number,payment?:string) {
+    let factor = 0;
 
-    prctSingle?.forEach((pd) => {
-        res.gross +=money*10;
-        res.IRS += (money*pd.Value*10);   
-        res.SS += (money*0.11)*10;
-        res.liquid +=(money - (money * (pd.Value + 0.11)))*10;
-    })
+    switch ((String(payment))) {
+        case "14m":
+            factor=14;
+            break;
+        case "duod-50":
+            factor=13.5;
+            break;
+        case "duod-5050":
+            factor = 13;
+            break;
 
-    prctDouble?.forEach((pd) => {
-        res.gross += money * 4;
-        res.IRS += (money * 2 * pd.Value) * 2;   
-        res.SS += (money * 2 * 0.11)*2;
-        res.liquid +=(money * 2 - (money * 2 * (pd.Value + 0.11))) *2;
-    })
+        case "duod-full":
+            factor = 12;
+            break;
+    }
+
+    return money * factor;
+}
+
+export function calculateYearSS(money:number,payment?:string) {
+    let factor = 0;
+
+    switch (String(payment)) {
+        case "14m":
+            factor=14;
+            break;
+        case "duod-50":
+            factor=13.5;
+            break;
+        case "duod-5050":
+            factor = 13;
+            break;
+
+        case "duod-full":
+            factor = 12;
+            break;
+    }
+
+    return money * factor * 0.11;
+}
+
+export function calculateYearlyIRS(money:number,payment?:string,prctSingle?:number,prctDouble?:number,prctHalf?:number) {
+    let res = 0;
+    const percentageSingle = prctSingle ?? 1;
+    const percentageDouble = prctDouble ?? 1;
+    const percentageHalf = prctHalf ?? 1;
+
+    switch(String(payment)) {
+        case "14m":
+            res = (money * percentageSingle * 10) + (2 * money * percentageSingle) * 2;
+            break;
+        case "duod-50":
+            res = (money * percentageSingle * 10) + (1.5 * money * percentageHalf) + (2 * money * percentageDouble);
+            break;
+        case "duod-5050":
+            res = (money * percentageSingle * 10) + (1.5 * money * percentageHalf) * 2;;
+            break;
+        case "duod-full":
+            res = money * percentageSingle * 12;
+            break;
+    }
+
+    return res;
+}
+
+export function calculateYearlyLiquid(money:number,payment?:string,prctSingle?:number,prctDouble?:number,prctHalf?:number) {
+    const percentageSingle = prctSingle ?? 1;
+    const percentageDouble = prctDouble ?? 1;
+    const percentageHalf = prctHalf ?? 1;
+
+    let res = (money - (money * (percentageSingle + 0.11)))*10;
+
+    switch(String(payment)) {
+        case "14m":
+            res += (money * 2 - (money * 2 * (percentageDouble + 0.11))) *2;
+            break;
+        case "duod-50":
+            res += (money * 1.5 - (money * 1.5 * (percentageHalf + 0.11))) + (money * 2 - (money * 2 * (percentageDouble + 0.11))) *2;
+            break;
+        case "duod-5050":
+            res += (money * 1.5 - (money * 1.5 * (percentageHalf + 0.11))) * 2;
+            break;
+        case "duod-full":
+            res += (money - (money * (percentageSingle + 0.11))) * 2;
+            break;
+        default:
+            break;
+    }
 
     return res;
 }

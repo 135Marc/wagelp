@@ -2,7 +2,11 @@ import { Form,FloatingLabel,Row,Col} from "react-bootstrap"
 import { months_number } from "../../utils/utils"
 import { useState } from "react"
 
-export function AditionalIncome() : JSX.Element {
+interface Props {
+    isYearly:boolean 
+}
+
+export function AditionalIncome({isYearly}:Props) : JSX.Element {
 
     const [hasFoodAid,setHasFoodAid] = useState<boolean>(false);
     const [hasBonus,setHasBonus] = useState<boolean>(false);
@@ -12,7 +16,7 @@ export function AditionalIncome() : JSX.Element {
 
     return (
         <>
-        <h3> Componentes Adicionais </h3>
+        <h4> Outros Vencimentos </h4>
 
             <Row>
                 <Col lg={2} style={{marginLeft:"1rem"}}>
@@ -44,15 +48,17 @@ export function AditionalIncome() : JSX.Element {
                     <Form.Control id="liquid-adder" size="lg" type="text" placeholder="Valor (€)" disabled={!hasBonus}/>
                 </Col>
 
-                <Col lg={2} style={{marginTop:"1rem"}}>
-                    <FloatingLabel label="Durante quantos meses?">
-                        <Form.Select aria-label="How Many Months" disabled={!hasBonus}>
-                            {months_number().map((n:number) =>
-                                <option key={n}> {n} </option>
-                            )}
-                        </Form.Select>
-                    </FloatingLabel>
-                </Col>
+                {isYearly &&
+                    <Col lg={2} style={{marginTop:"1rem"}}>
+                        <FloatingLabel label="Durante quantos meses?">
+                            <Form.Select aria-label="How Many Months" disabled={!hasBonus}>
+                                {months_number().map((n:number) =>
+                                    <option key={n}> {n} </option>
+                                )}
+                            </Form.Select>
+                        </FloatingLabel>
+                    </Col>
+                }
             </Row>
         </>
     )

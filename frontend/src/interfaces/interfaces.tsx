@@ -8,16 +8,11 @@ PROPS
 
 export interface TaxTableProps {
     cancelToken:CancelTokenSource,
-    tableID: number,
-    tableType: number
 }
 
 
 export interface IncomeProps extends TaxTableProps {
-    income:number,
-    dependents:number,
     isYearly:boolean,
-    payment?:string,
     foodValue?:number,
     foodType?:string,
     bonusValue?:number,
@@ -33,6 +28,14 @@ export interface ResultsBodyProps {
 
 export interface ResultsHeaderProps {
     headers: string[]
+}
+
+export interface YearlyIncomeProps {
+    money: number,
+    payment?: string,
+    percentage?: number,
+    percentageOneHalf?: number,
+    percentageDouble?: number
 }
 
 /* 

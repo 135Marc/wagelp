@@ -2,13 +2,11 @@ import axios, { CancelTokenSource } from "axios"
 import { TableReq,YearsData,TaxTableData, BracketData } from "../interfaces/interfaces";
 
 export async function getPromise():Promise<TableReq> {
-    return axios.post<TableReq>('http://localhost:8080/regimes')
-    .then(({data}) => data)
+    return axios.post<TableReq>('http://localhost:8080/regimes').then(({data}) => data)
 }
 
 export async function getYears():Promise<YearsData> {
-    return axios.post<YearsData>('http://localhost:8080/years')
-           .then(({data}) => data)
+    return axios.post<YearsData>('http://localhost:8080/years').then(({data}) => data)
 }
 
 export async function getTable(tableID:number,tableType:number,cancelToken:CancelTokenSource):Promise<TaxTableData> {
