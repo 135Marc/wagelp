@@ -1,28 +1,19 @@
 import { CancelTokenSource } from "axios"
 
-/*
-
-PROPS
-
-*/
+/* PROPS */
 
 export interface TaxTableProps {
     cancelToken:CancelTokenSource,
 }
 
-
 export interface IncomeProps extends TaxTableProps {
     isYearly:boolean,
-    foodValue?:number,
-    foodType?:string,
-    bonusValue?:number,
     bonusPeriodicity?:number
 }
 
 export interface ResultsBodyProps {
     percentageData : BracketType[] | undefined,
     money:number,
-    aid?:number,
     separator?:string
 }
 
@@ -38,26 +29,10 @@ export interface YearlyIncomeProps {
     percentageDouble?: number
 }
 
-/* 
+/* POST REQUEST DATA */
 
-POST REQUEST DATA
-
-*/
-
-export interface TaxTableData {
-    data: TaxTableType[]
-}
-
-export interface BracketData {
-    data: BracketType[];
-}
-
-export interface YearsData {
-    data: YearsType[]
-}
-
-export interface TableReq {
-    data:TableType[]
+export interface JSONData<T> {
+    data: T[]
 }
 
 export interface TaxTableType  {
@@ -71,8 +46,6 @@ export interface TaxTableType  {
     Maximum:number,
     Bracket_ID:number,
 }
-
-
 
 export interface BracketType {
     ID:number,

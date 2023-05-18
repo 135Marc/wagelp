@@ -1,6 +1,6 @@
 import { BracketType, ResultsBodyProps } from "../../interfaces/interfaces"
 
-function ResultsBody({percentageData,money,separator,aid}:ResultsBodyProps) : JSX.Element {
+function ResultsBody({percentageData,money,separator}:ResultsBodyProps) : JSX.Element {
 
     return(
         <>
