@@ -1,4 +1,4 @@
-FROM node:16.19.1-slim
+FROM node:16.20.0-bullseye-slim
 WORKDIR /app
 COPY . ./
 COPY start.sh /usr/bin/
