@@ -20,7 +20,7 @@ export function AditionalIncome({isYearly}:Props) : JSX.Element {
 
             <Row>
                 <Col lg={2} style={{marginLeft:"1rem"}}>
-                    <Form.Check label="Subsídio de Alimentação" name="group1" type="checkbox" id="inline-checkbox-3"
+                    <Form.Check label="Subsídio de Alimentação" name="group1" type="checkbox" id="inline-checkbox-1"
                         onClick={ () => setHasFoodAid(!hasFoodAid) }/>    
                 </Col>
 
@@ -40,7 +40,7 @@ export function AditionalIncome({isYearly}:Props) : JSX.Element {
 
             <Row>
                 <Col lg={2} style={{marginLeft:"1rem",marginTop:"1rem"}}>
-                    <Form.Check label="Bónus/Ajudas de Custo" name="group1" type="checkbox" id="inline-checkbox-3"
+                    <Form.Check label="Bónus/Ajudas de Custo" name="group1" type="checkbox" id="inline-checkbox-2"
                         onClick={() => setHasBonus(!hasBonus)}/>        
                 </Col>
 

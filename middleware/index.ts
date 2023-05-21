@@ -1,15 +1,18 @@
 import { regionsRoute,descriptionsRoute,tablesRoute,tableRoute, incomeRoute,yearsRoute,regionYearRoute,percentageRoute } from "./tax_router";
 import express  from "express";
 import cors from 'cors';
+import compression from "compression";
 
 const app = express();
 const port = 8080;
+const comp = compression();
 
 const options: cors.CorsOptions = {
     origin: '*'
   };
 
 app.use(cors(options))
+app.use(comp);
 
 app.use('/years',yearsRoute)
 app.use('/regions',regionsRoute)

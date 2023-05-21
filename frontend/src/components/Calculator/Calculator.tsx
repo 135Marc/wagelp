@@ -42,7 +42,7 @@ export function Calculator() : JSX.Element {
 
                 <Col lg={3}>
                     <Form.Check type="checkbox" inline id="first-check" label="Mensal" checked={!isYearly} onChange={() => setIsYearly(false)}/>
-                    <Form.Check type="checkbox" inline label="Anual"  checked={isYearly} onChange={() => setIsYearly(true)}/>
+                    <Form.Check type="checkbox" inline id="second-check" label="Anual" checked={isYearly} onChange={() => setIsYearly(true)}/>
                 </Col>
             </Row>
 
