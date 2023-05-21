@@ -1,0 +1,27 @@
+version: "3.6"
+
+networks:
+  main:
+
+services:
+  fe:
+    image: wagelp-fe:latest
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    networks:
+      - main
+
+  be:
+    image: wagelp-be:latest
+    build:
+      context: middleware
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - main
+
+
