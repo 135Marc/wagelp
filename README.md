@@ -1,4 +1,8 @@
 # wagelp - Salary Calculations Simplified
+
+**NOTE - THIS APPLICATION'S METHOD OF CALCULATION IS OUT-DATED!** - The Government of Portugal has changed the method of calculating, and applying, the Income Tax. This change was made in July of 2023.
+I did not update this application, mainly because I lost interest in it, but who knows, maybe one day I'll go back to it? Not likely though, I've learned what I wanted to learn with this project anyway.
+
 WebApp to simplify after-taxes salary calculations. Only applies to salaried employees in Portugal, as of now. 
 
 It's stack is as follows: **Python (Parser), SQLite (Database), NodeJS (Middleware) and React-Typescript (FrontEnd).**
